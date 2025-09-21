@@ -1,0 +1,59 @@
+name: Deploy to GCP
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  REGION: "us-central1"
+  BACKEND_SERVICE_NAME: "automodeler-backend"
+  FRONTEND_SERVICE_NAME: "automodeler-frontend"
+  GAR_LOCATION: "us-central1-docker.pkg.dev"
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+
+      - name: Configure Docker
+        run: gcloud auth configure-docker $GAR_LOCATION
+
+      - name: Build and Push Backend Image
+        run: |
+          docker build -t $GAR_LOCATION/$PROJECT_ID/$BACKEND_SERVICE_NAME:latest ./backend
+          docker push $GAR_LOCATION/$PROJECT_ID/$BACKEND_SERVICE_NAME:latest
+
+      - name: Build and Push Frontend Image
+        run: |
+          docker build -t $GAR_LOCATION/$PROJECT_ID/$FRONTEND_SERVICE_NAME:latest ./frontend
+          docker push $GAR_LOCATION/$PROJECT_ID/$FRONTEND_SERVICE_NAME:latest
+
+      - name: Deploy Backend to Cloud Run
+        run: |
+          gcloud run deploy $BACKEND_SERVICE_NAME \
+            --image=$GAR_LOCATION/$PROJECT_ID/$BACKEND_SERVICE_NAME:latest \
+            --platform=managed \
+            --region=$REGION \
+            --allow-unauthenticated \
+            --set-env-vars="DATABASE_URL=${{ secrets.DATABASE_URL }},GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}"
+
+      - name: Deploy Frontend to Cloud Run
+        run: |
+          gcloud run deploy $FRONTEND_SERVICE_NAME \
+            --image=$GAR_LOCATION/$PROJECT_ID/$FRONTEND_SERVICE_NAME:latest \
+            --platform=managed \
+            --region=$REGION \
+            --allow-unauthenticated \
+            --set-env-vars="NEXT_PUBLIC_API_URL=$(gcloud run services describe $BACKEND_SERVICE_NAME --platform=managed --region=$REGION --format='value(status.url)')"

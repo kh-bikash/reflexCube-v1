@@ -1,0 +1,22 @@
+{
+  "name": "AutoModeler Dev Environment",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "backend",
+  "workspaceFolder": "/app",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "python.pythonPath": "/usr/local/bin/python",
+        "python.linting.pylintEnabled": true,
+        "python.linting.enabled": true
+      },
+      "extensions": [
+        "ms-python.python",
+        "ms-azuretools.vscode-docker",
+        "hashicorp.terraform"
+      ]
+    }
+  },
+  "forwardPorts": [8000, 3000, 5001, 8082],
+  "postCreateCommand": "pip install -r requirements.txt"
+}
