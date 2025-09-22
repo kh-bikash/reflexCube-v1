@@ -1,8 +1,14 @@
-# Placeholder for jobs.py
+# backend/app/api/endpoints/jobs.py
+
 from fastapi import APIRouter, HTTPException
+from celery import Celery
 from celery.result import AsyncResult
-from worker.celery_app import celery_app
-from app.schemas.job import JobRequest, JobStatus
+from app.schemas.base import JobRequest
+from app.schemas.job import JobStatus
+
+# Create a new, separate Celery instance for the API to use as a client.
+# It connects to the same Redis broker as the worker.
+api_celery_app = Celery('tasks', broker='redis://redis:6379/0', backend='redis://redis:6379/0')
 
 router = APIRouter()
 
@@ -11,7 +17,8 @@ def request_model(job_request: JobRequest):
     """
     Accepts a natural language prompt to start a model training job.
     """
-    task = celery_app.send_task("worker.tasks.run_training_pipeline", args=[job_request.prompt])
+    # Send the task by its full, registered string name.
+    task = api_celery_app.send_task("app.worker.tasks.run_training_pipeline", args=[job_request.prompt])
     return JobStatus(job_id=task.id, status="PENDING")
 
 
@@ -20,12 +27,12 @@ def get_status(job_id: str):
     """
     Retrieves the status of a background job.
     """
-    task_result = AsyncResult(job_id, app=celery_app)
+    # Use the same app instance to fetch the result.
+    task_result = AsyncResult(job_id, app=api_celery_app)
     status = task_result.status
     result = task_result.result
 
     if status == "FAILURE":
-        # Log the error properly in a real app
         print(f"Job {job_id} failed. Reason: {result}")
         raise HTTPException(status_code=500, detail=f"Job failed: {str(result)}")
 

@@ -1,1 +1,28 @@
-# Placeholder for requirements.txt
+# FastAPI and Server
+fastapi
+uvicorn[standard]
+python-dotenv
+
+# Celery Worker
+celery
+redis
+
+# ML & Data
+torch==2.4.1
+transformers
+datasets
+peft
+accelerate
+scikit-learn
+
+# MLOps
+dvc[gcs]
+mlflow
+google-cloud-aiplatform
+
+# Data Ingestion
+requests
+beautifulsoup4
+newsapi-python
+urllib3
+pydantic-settings
