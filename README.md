@@ -9,8 +9,7 @@
 
   
 
-![Training Animation](https://media.giphy.com/media/3o7TKtnuHOHHUjR38Y/giphy.gif)
-![Dashboard Animation](https://media.giphy.com/media/l0HlOvJ7yaacpuSas/giphy.gif)
+
 ---
 
 ## ✨ Features
