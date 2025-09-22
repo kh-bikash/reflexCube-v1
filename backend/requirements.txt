@@ -2,13 +2,15 @@
 fastapi
 uvicorn[standard]
 python-dotenv
+pydantic-settings
 
 # Celery Worker
 celery
 redis
 
 # ML & Data
-torch==2.4.1
+# Use the CPU-only torch index URL (can override with local wheel)
+torch --index-url https://download.pytorch.org/whl/cpu
 transformers
 datasets
 peft
@@ -18,11 +20,9 @@ scikit-learn
 # MLOps
 dvc[gcs]
 mlflow
-google-cloud-aiplatform
 
 # Data Ingestion
 requests
 beautifulsoup4
 newsapi-python
 urllib3
-pydantic-settings

@@ -16,8 +16,10 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true # Ensures Git LFS files are pulled
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v1
@@ -39,15 +41,14 @@ jobs:
         run: |
           docker build -t $GAR_LOCATION/$PROJECT_ID/$FRONTEND_SERVICE_NAME:latest ./frontend
           docker push $GAR_LOCATION/$PROJECT_ID/$FRONTEND_SERVICE_NAME:latest
-
+          
       - name: Deploy Backend to Cloud Run
         run: |
           gcloud run deploy $BACKEND_SERVICE_NAME \
             --image=$GAR_LOCATION/$PROJECT_ID/$BACKEND_SERVICE_NAME:latest \
             --platform=managed \
             --region=$REGION \
-            --allow-unauthenticated \
-            --set-env-vars="DATABASE_URL=${{ secrets.DATABASE_URL }},GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}"
+            --allow-unauthenticated
 
       - name: Deploy Frontend to Cloud Run
         run: |
