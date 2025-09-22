@@ -1,6 +1,6 @@
-# AutoModeler: AI Model Generation Platform
+# Reflex Cube: AI Model Generation Platform
 
-AutoModeler is a full-stack MLOps platform that automatically gathers data, trains a model, and serves it based on a natural language prompt.
+Reflex Cube is a full-stack MLOps platform that automatically gathers data, trains a model, and serves it based on a natural language prompt.
 
 ## Architecture
 - **Backend**: FastAPI (Python)
