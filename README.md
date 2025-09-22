@@ -6,7 +6,7 @@
 
 ![Reflex Cube Banner](https://img.shields.io/badge/Reflex%20Cube-AI%20Platform-blueviolet?style=for-the-badge&logo=tensorflow) ![FastAPI](https://img.shields.io/badge/FastAPI-Backend-brightgreen?style=for-the-badge&logo=fastapi) ![Next.js](https://img.shields.io/badge/Next.js-Frontend-black?style=for-the-badge&logo=next.js) ![Celery](https://img.shields.io/badge/Celery-Task%20Queue-lightgrey?style=for-the-badge&logo=celery) ![Redis](https://img.shields.io/badge/Redis-Queue-red?style=for-the-badge&logo=redis) ![MLflow](https://img.shields.io/badge/MLflow-Tracking-orange?style=for-the-badge&logo=mlflow)  
 
-![Reflex Cube Animation](https://i.imgur.com/yourGifID.gif)
+
   
 
 ![Training Animation](https://media.giphy.com/media/3o7TKtnuHOHHUjR38Y/giphy.gif)
